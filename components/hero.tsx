@@ -14,8 +14,8 @@ export default function Hero() {
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-12 items-center">
           <div className="space-y-6">
             <Badge className="px-3 py-1 text-sm bg-purple-400/20 text-purple-300 hover:bg-purple-400/30 border-none">
-              <span className="animate-pulse mr-1">★</span> FREE FOR A WHILE -
-              NO LIMITS!
+              <span className="animate-pulse mr-1">★</span> FREE FOR A LIMITED
+              TIME - NO LIMITS!
             </Badge>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter text-white">
@@ -46,7 +46,7 @@ export default function Hero() {
 
             <p className="text-xl text-white/70 max-w-[600px]">
               Instantly transform any photo into stunning AI-generated artwork
-              with just one click. Unlimited transformations for a full month!
+              with just one click. Unlimited transformations for a limited time!
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 pt-4">

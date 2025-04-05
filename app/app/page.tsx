@@ -2,12 +2,13 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import UploadSection from "@/components/upload-section";
+import FileUploader from "@/components/file-uploader";
 import StyleSelector from "@/components/style-selector";
 
 export default function AppPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -15,6 +16,10 @@ export default function AppPage() {
 
   const handleStyleSelect = (styleName: string) => {
     setSelectedStyle(styleName);
+  };
+
+  const handleGenerateImage = () => {
+    console.log("Generating image...", selectedFile, selectedStyle);
   };
 
   return (
@@ -26,7 +31,7 @@ export default function AppPage() {
               Upload Your Photo
             </h2>
             <div className="flex-1">
-              <UploadSection onFileSelect={handleFileSelect} />
+              <FileUploader onFileSelect={handleFileSelect} />
             </div>
           </div>
 
@@ -47,9 +52,17 @@ export default function AppPage() {
           <Button
             size="lg"
             className="bg-lime-400 text-black hover:bg-lime-300 text-lg transition-all duration-300 shadow-lg hover:shadow-lime-400/20"
-            disabled={!selectedFile || !selectedStyle}
+            disabled={!selectedFile || !selectedStyle || isGenerating}
+            onClick={handleGenerateImage}
           >
-            Generate Image
+            {isGenerating ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                Generating...
+              </div>
+            ) : (
+              "Generate Image"
+            )}
           </Button>
         </div>
       </div>

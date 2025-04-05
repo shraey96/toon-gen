@@ -1,36 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
 
-interface UploadSectionProps {
+interface FileUploaderProps {
   onFileSelect: (file: File) => void;
 }
 
-export default function UploadSection({ onFileSelect }: UploadSectionProps) {
+export default function FileUploader({ onFileSelect }: FileUploaderProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
+  const validateFile = (file: File) => {
+    if (!file.type.startsWith("image/")) {
+      setError("Please upload an image file");
+      return false;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError("File size must be less than 5MB");
+      return false;
+    }
+    return true;
+  };
+
+  const handleFile = (file: File) => {
     setError(null);
-
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        setError("Please upload an image file");
-        return;
-      }
-      if (file.size > 5 * 1024 * 1024) {
-        setError("File size must be less than 5MB");
-        return;
-      }
-
+    if (validateFile(file)) {
       onFileSelect(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     }
   };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleFile(file);
+    }
+  };
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file) {
+      handleFile(file);
+    }
+  }, []);
 
   const handleCancel = () => {
     setPreviewUrl(null);
@@ -44,7 +76,17 @@ export default function UploadSection({ onFileSelect }: UploadSectionProps) {
   };
 
   return (
-    <div className="border-2 border-dashed border-white/20 rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:border-purple-400/50 hover:bg-white/10 h-full">
+    <div
+      className={`border-2 border-dashed rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 h-full
+        ${
+          isDragging
+            ? "border-purple-400/50 bg-white/10"
+            : "border-white/20 hover:border-purple-400/50 hover:bg-white/10"
+        }`}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
+    >
       <div className="flex flex-col justify-center h-full space-y-4">
         <input
           type="file"

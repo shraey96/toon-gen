@@ -1,6 +1,6 @@
-import pixarImage from "@/images/styles/pixar.jpeg";
-import animeImage from "@/images/styles/anime.jpeg";
-import southparkImage from "@/images/styles/southpark.jpeg";
+import pixarImage from "@/images/styles/pixar.png";
+import animeImage from "@/images/styles/anime.png";
+import southparkImage from "@/images/styles/southpark.png";
 
 export const APP_STYLES = [
   {

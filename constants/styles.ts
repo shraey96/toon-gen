@@ -4,7 +4,7 @@ import southparkImage from "@/images/styles/southpark.png";
 
 export const APP_STYLES = [
   {
-    name: "Pixar Style",
+    name: "Pixar",
     image: pixarImage,
     badgeColor: "bg-lime-400/90",
     textColor: "text-black",

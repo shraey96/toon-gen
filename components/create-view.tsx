@@ -78,7 +78,10 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
               Upload Your Photo
             </h2>
             <div className="flex-1">
-              <FileUploader onFileSelect={handleFileSelect} />
+              <FileUploader
+                withCamera
+                onFileSelect={(file) => file && handleFileSelect(file)}
+              />
             </div>
           </div>
 

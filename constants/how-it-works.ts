@@ -1,3 +1,7 @@
+import uploadPreview from "@/images/how-it-works/step1.png";
+import stylesPreview from "@/images/how-it-works/step2.png";
+import resultPreview from "@/images/how-it-works/step3.png";
+
 import { APP_STYLES } from "./styles";
 
 export const HOW_IT_WORKS_STEPS = [
@@ -11,7 +15,7 @@ export const HOW_IT_WORKS_STEPS = [
       "Quick upload with drag & drop functionality",
       "Optimized for images up to 10MB",
     ],
-    image: "/images/how-it-works/upload-preview.png",
+    image: uploadPreview,
   },
   {
     number: 2,
@@ -19,7 +23,7 @@ export const HOW_IT_WORKS_STEPS = [
     description:
       "Dive into our curated collection of AI-powered artistic styles. Each style has been carefully crafted to transform your photos into stunning pieces of art that capture different moods and aesthetics.",
     styles: APP_STYLES,
-    image: "/images/how-it-works/styles-preview.png",
+    image: stylesPreview,
   },
   {
     number: 3,
@@ -31,6 +35,6 @@ export const HOW_IT_WORKS_STEPS = [
       "Multiple resolution options",
       "Instant downloads",
     ],
-    image: "/images/how-it-works/result-preview.png",
+    image: resultPreview,
   },
 ];

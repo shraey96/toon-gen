@@ -1,74 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import FileUploader from "@/components/file-uploader";
-import StyleSelector from "@/components/style-selector";
+import AppTabs from "@/components/app-tabs";
 
 export default function AppPage() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [selectedStyle, setSelectedStyle] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-
-  const handleFileSelect = (file: File) => {
-    setSelectedFile(file);
-  };
-
-  const handleStyleSelect = (styleName: string) => {
-    setSelectedStyle(styleName);
-  };
-
-  const handleGenerateImage = () => {
-    console.log("Generating image...", selectedFile, selectedStyle);
-  };
-
   return (
     <main className="flex-1 bg-gradient-to-b from-black to-gray-900">
-      <div
-        className="container px-4 py-4 sm:py-8 animate-in fade-in slide-in-from-bottom-4"
-        style={{ animationDelay: "150ms", animationFillMode: "both" }}
-      >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8 lg:gap-12 min-h-[auto] lg:min-h-[600px]">
-          <div className="flex flex-col min-h-[300px] sm:min-h-[500px] lg:min-h-0">
-            <h2 className="text-xl sm:text-2xl font-bold text-white text-center mb-4 sm:mb-6">
-              Upload Your Photo
-            </h2>
-            <div className="flex-1">
-              <FileUploader onFileSelect={handleFileSelect} />
-            </div>
-          </div>
-
-          <div className="flex flex-col min-h-[300px] sm:min-h-[500px] lg:min-h-0">
-            <h2 className="text-xl sm:text-2xl font-bold text-white text-center mb-4 sm:mb-6">
-              Choose Your Style
-            </h2>
-            <div className="flex-1">
-              <StyleSelector
-                selectedStyle={selectedStyle}
-                onStyleSelect={handleStyleSelect}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-4 sm:mt-8 flex justify-center">
-          <Button
-            size="lg"
-            className="w-full sm:w-auto bg-lime-400 text-black hover:bg-lime-300 text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-lime-400/20"
-            disabled={!selectedFile || !selectedStyle || isGenerating}
-            onClick={handleGenerateImage}
-          >
-            {isGenerating ? (
-              <div className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
-                Generating...
-              </div>
-            ) : (
-              "Generate Image"
-            )}
-          </Button>
-        </div>
-      </div>
+      <AppTabs />
     </main>
   );
 }

@@ -100,7 +100,7 @@ export default function Navbar() {
               className="inline-block"
             >
               <Button className="w-full bg-lime-400 text-black hover:bg-lime-300 rounded-l rounded-r">
-                Create Image
+                Get Started
               </Button>
             </Link>
           )}

@@ -4,10 +4,11 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles } from "lucide-react";
 import { APP_STYLES } from "@/constants/styles";
+import { ImageGenerationStyle } from "@/lib/image-generation";
 
 interface StyleSelectorProps {
-  selectedStyle: string | null;
-  onStyleSelect: (styleName: string) => void;
+  selectedStyle: ImageGenerationStyle | null;
+  onStyleSelect: (styleName: ImageGenerationStyle) => void;
 }
 
 export default function StyleSelector({
@@ -18,16 +19,20 @@ export default function StyleSelector({
     <div className="border-2 border-white/20 rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 hover:bg-white/10 h-full overflow-y-auto">
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {APP_STYLES.map((style) => {
-          const isStyleSelected = selectedStyle === style.name;
+          const isStyleSelected = selectedStyle === style.style;
           return (
             <div
-              key={style.name}
+              key={style.style}
               className={`relative aspect-square rounded-lg overflow-hidden cursor-pointer transition-all duration-300 group ${
                 isStyleSelected
                   ? "ring-2 ring-lime-400 scale-[1.02] shadow-xl shadow-lime-400/20"
                   : "border border-white/10 hover:border-white/30"
               }`}
-              onClick={() => onStyleSelect(isStyleSelected ? "" : style.name)}
+              onClick={() =>
+                onStyleSelect(
+                  isStyleSelected ? "" : (style.style as ImageGenerationStyle)
+                )
+              }
             >
               <div className="relative w-full h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-black/40 to-transparent z-10 group-hover:from-black/20 transition-all duration-300" />

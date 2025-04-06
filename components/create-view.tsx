@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import FileUploader from "@/components/file-uploader";
 import StyleSelector from "@/components/style-selector";
@@ -47,6 +48,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
       const result = await generateToonImage(selectedFile, selectedStyle);
 
       if (result.success && result.imageUrl) {
+        toast.success("Image generated successfully");
         setGeneratedImageUrl(result.imageUrl);
         onImageGenerated({
           url: result.imageUrl,
@@ -61,6 +63,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
       }
     } catch (error) {
       console.error("Error generating image:", error);
+      toast.error("Failed to generate image");
     } finally {
       setIsGenerating(false);
     }

@@ -1,4 +1,5 @@
 import type React from "react";
+import { Toaster } from "react-hot-toast";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Footer from "@/components/footer";
@@ -85,6 +86,7 @@ export default function RootLayout({
           <Footer />
         </div>
       </body>
+      <Toaster />
     </html>
   );
 }

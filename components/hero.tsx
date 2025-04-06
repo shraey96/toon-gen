@@ -1,8 +1,8 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
-import { Sparkles } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import { Sparkles } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { APP_STYLES } from "@/constants/styles";
 
 const HOME_PAGE_STYLES = APP_STYLES.slice(0, 4);

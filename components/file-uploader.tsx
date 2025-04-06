@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
+import { convertToPNG } from "@/lib/image-utils";
 
 interface FileUploaderProps {
   onFileSelect: (file: File | null) => void;
@@ -34,12 +35,24 @@ export default function FileUploader({
     return true;
   };
 
-  const handleFile = (file: File) => {
+  const handleFile = async (file: File) => {
     setError(null);
     if (validateFile(file)) {
-      onFileSelect(file);
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
+      try {
+        let processedFile = file;
+        if (
+          ["image/webp", "image/jpeg"].includes(file.type) &&
+          file.size > 5 * 1024 * 1024
+        ) {
+          processedFile = await convertToPNG(file);
+        }
+        onFileSelect(processedFile);
+        const url = URL.createObjectURL(processedFile);
+        setPreviewUrl(url);
+      } catch (error) {
+        setError("Failed to process image");
+        console.error("Error processing image:", error);
+      }
     }
   };
 

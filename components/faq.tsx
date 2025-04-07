@@ -15,8 +15,7 @@ export default function Faq() {
             Frequently Asked Questions
           </h2>
           <p className="text-xl text-white/70 max-w-2xl mx-auto">
-            Everything you need to know about our AI image transformation
-            service
+            Everything you need to know about our image transformation service
           </p>
         </div>
 

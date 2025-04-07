@@ -64,7 +64,7 @@ export default function Navbar() {
           <div className="hidden md:flex items-center">
             <Link href="/app">
               <Button className="bg-lime-400 text-black hover:bg-lime-300 rounded-l rounded-r">
-                Create Image
+                Get Started
               </Button>
             </Link>
           </div>

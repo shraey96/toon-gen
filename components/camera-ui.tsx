@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Countdown from "./countdown";
 
@@ -17,21 +17,21 @@ export default function CameraUI({
   handleFile,
   handleCancel,
 }: CameraUIProps) {
-  const [isCameraActive, setIsCameraActive] = useState(false);
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [tempPhotoUrl, setTempPhotoUrl] = useState<string | null>(null);
+  const [isCameraMode, setIsCameraMode] = useState(false);
 
   const startCamera = async () => {
     try {
       stopCamera();
       const stream = await navigator.mediaDevices.getUserMedia({ video: true });
       setVideoStream(stream);
-      setIsCameraActive(true);
+      setIsCameraMode(true);
       setTempPhotoUrl(null);
     } catch (err) {
       console.error("Camera permission denied:", err);
-      setIsCameraActive(false);
+      setIsCameraMode(false);
     }
   };
 
@@ -40,7 +40,7 @@ export default function CameraUI({
       videoStream.getTracks().forEach((track) => track.stop());
       setVideoStream(null);
     }
-    setIsCameraActive(false);
+    setIsCameraMode(false);
     setTempPhotoUrl(null);
     setIsCountingDown(false);
   };
@@ -105,6 +105,11 @@ export default function CameraUI({
     capturePhoto();
   };
 
+  // Cleanup camera on unmount
+  useEffect(() => {
+    return () => stopCamera();
+  }, []);
+
   return (
     <div className="flex flex-col justify-center h-full space-y-4">
       {previewUrl ? (
@@ -138,7 +143,7 @@ export default function CameraUI({
             </svg>
           </button>
         </div>
-      ) : isCameraActive ? (
+      ) : isCameraMode ? (
         <div className="relative w-full aspect-video">
           <video
             autoPlay
@@ -313,10 +318,10 @@ export default function CameraUI({
                 }
               }}
               className="hidden"
-              id="file-upload"
+              id="camera-file-upload"
             />
             <label
-              htmlFor="file-upload"
+              htmlFor="camera-file-upload"
               className="cursor-pointer block space-y-4 p-4 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-200"
             >
               <div className="animate-pulse">

@@ -62,7 +62,7 @@ export default function FileUploader({
   };
 
   return (
-    <div className="border-2 border-dashed rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 h-full border-white/20 hover:border-purple-400/50 hover:bg-white/10">
+    <div className="relative border-2 border-dashed rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 h-full border-white/20 hover:border-purple-400/50 hover:bg-white/10">
       {withCamera ? (
         <CameraUI
           previewUrl={previewUrl}
@@ -72,10 +72,8 @@ export default function FileUploader({
         />
       ) : (
         <FileDropUI
-          onFileSelect={onFileSelect}
           previewUrl={previewUrl}
           error={error}
-          validateFile={validateFile}
           handleFile={handleFile}
           handleCancel={handleCancel}
         />

@@ -15,7 +15,8 @@ export default function TermsPage() {
             </h1>
           </div>
           <p className="text-white/60 text-center max-w-2xl mx-auto">
-            Please read these terms carefully before using our service.
+            By accessing and using ZappyToon, you agree to be bound by these
+            Terms of Service.
           </p>
         </div>
 
@@ -35,9 +36,8 @@ export default function TermsPage() {
             <h2 className="text-2xl font-semibold text-white">
               2. Service Description
             </h2>
-            <p>
-              PixelMuse AI provides AI-powered image transformation services. We
-              reserve the right to:
+            <p className="text-white/60 mb-4">
+              ZappyToon provides AI-powered image transformation services. We
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Modify or discontinue any aspect of the service</li>
@@ -75,9 +75,8 @@ export default function TermsPage() {
             <h2 className="text-2xl font-semibold text-white">
               5. Limitation of Liability
             </h2>
-            <p>
-              PixelMuse AI is provided "as is" without warranties of any kind.
-              We are not liable for:
+            <p className="text-white/60 mb-4">
+              ZappyToon is provided "as is" without warranties of any kind.
             </p>
             <ul className="list-disc pl-6 space-y-2">
               <li>Service interruptions or errors</li>
@@ -99,7 +98,7 @@ export default function TermsPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold text-white">7. Contact</h2>
             <p>For questions about these terms, please contact us at:</p>
-            <p className="text-purple-400">legal@pixelmuse.ai</p>
+            <p className="text-purple-400">legal@zappytoon.com</p>
           </section>
 
           <p className="text-sm text-white/60 pt-8">

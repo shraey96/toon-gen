@@ -5,19 +5,15 @@ import Image from "next/image";
 import { Sparkles } from "lucide-react";
 
 interface FileDropUIProps {
-  onFileSelect: (file: File | null) => void;
   previewUrl: string | null;
   error: string | null;
-  validateFile: (file: File) => boolean;
   handleFile: (file: File) => Promise<void>;
   handleCancel: () => void;
 }
 
 export default function FileDropUI({
-  onFileSelect,
   previewUrl,
   error,
-  validateFile,
   handleFile,
   handleCancel,
 }: FileDropUIProps) {

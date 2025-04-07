@@ -9,9 +9,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "PixelMuse AI - Transform Your Photos into AI Art",
+  title: "ZappyToon - Transform Your Photos into AI Art",
   description:
-    "Transform your photos into stunning AI-generated artwork. Choose from various artistic styles and create unique digital masterpieces with our advanced AI technology.",
+    "Transform your photos into stunning AI-generated art with ZappyToon. Create unique, artistic images in seconds.",
   keywords: [
     "AI art",
     "photo to art",
@@ -20,35 +20,35 @@ export const metadata: Metadata = {
     "photo transformation",
     "AI style transfer",
   ],
-  authors: [{ name: "PixelMuse AI" }],
-  creator: "PixelMuse AI",
-  publisher: "PixelMuse AI",
+  authors: [{ name: "ZappyToon" }],
+  creator: "ZappyToon",
+  publisher: "ZappyToon",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://pixelmuse.ai"),
+  metadataBase: new URL("https://zappytoon.com"),
   openGraph: {
-    title: "PixelMuse AI - Transform Your Photos into AI Art",
+    type: "website",
+    locale: "en_US",
+    title: "ZappyToon - Transform Your Photos into AI Art",
     description:
-      "Transform your photos into stunning AI-generated artwork. Choose from various artistic styles and create unique digital masterpieces.",
-    url: "https://pixelmuse.ai",
-    siteName: "PixelMuse AI",
+      "Transform your photos into stunning AI-generated art with ZappyToon. Create unique, artistic images in seconds.",
+    url: "https://zappytoon.com",
+    siteName: "ZappyToon",
     images: [
       {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "PixelMuse AI - Transform Your Photos into AI Art",
+        alt: "ZappyToon - Transform Your Photos into AI Art",
       },
     ],
-    locale: "en_US",
-    type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "PixelMuse AI - Transform Your Photos into AI Art",
+    title: "ZappyToon - Transform Your Photos into AI Art",
     description:
       "Transform your photos into stunning AI-generated artwork. Choose from various artistic styles and create unique digital masterpieces.",
     images: ["/twitter-image.jpg"],

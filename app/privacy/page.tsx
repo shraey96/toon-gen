@@ -83,7 +83,7 @@ export default function PrivacyPage() {
               If you have any questions about our privacy policy, please contact
               us at:
             </p>
-            <p className="text-purple-400">privacy@pixelmuse.ai</p>
+            <p className="text-purple-400">privacy@zappytoon.com</p>
           </section>
 
           <p className="text-sm text-white/60 pt-8">

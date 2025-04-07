@@ -5,19 +5,15 @@ import Image from "next/image";
 import Countdown from "./countdown";
 
 interface CameraUIProps {
-  onFileSelect: (file: File | null) => void;
   previewUrl: string | null;
   error: string | null;
-  validateFile: (file: File) => boolean;
   handleFile: (file: File) => Promise<void>;
   handleCancel: () => void;
 }
 
 export default function CameraUI({
-  onFileSelect,
   previewUrl,
   error,
-  validateFile,
   handleFile,
   handleCancel,
 }: CameraUIProps) {

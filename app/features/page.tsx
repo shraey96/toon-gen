@@ -14,11 +14,8 @@ export default function FeaturesPage() {
     <main className="flex-1 bg-gradient-to-b from-black to-gray-900">
       <div className="container px-4 py-16">
         <div className="space-y-6 mb-12">
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tighter text-white text-center">
-            Powerful{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
-              Features
-            </span>
+          <h1 className="text-4xl font-bold text-center mb-8">
+            Discover what makes ZappyToon the perfect tool for transforming
           </h1>
           <p className="text-white/60 text-center max-w-2xl mx-auto">
             Discover what makes PixelMuse AI the perfect tool for transforming

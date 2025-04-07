@@ -26,7 +26,7 @@ export default function Navbar() {
             <div className="flex items-center gap-2 hover:opacity-80">
               <Sparkles className="h-6 w-6 text-purple-400" />
               <span className="text-xl font-bold tracking-tight text-white">
-                PixelMuse AI
+                ZappyToon
               </span>
             </div>
           </Link>

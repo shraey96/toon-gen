@@ -12,6 +12,11 @@ export const metadata: Metadata = {
   title: "ZappyToon - Transform Your Photos into AI Art",
   description:
     "Transform your photos into stunning AI-generated art with ZappyToon. Create unique, artistic images in seconds.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
   keywords: [
     "AI art",
     "photo to art",

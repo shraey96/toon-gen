@@ -1,0 +1,23 @@
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://zappytoon.com/sitemap.xml
+
+# Disallow admin and private routes
+Disallow: /app/
+Disallow: /api/
+Disallow: /_next/
+Disallow: /static/
+Disallow: /styles/
+
+# Allow specific pages
+Allow: /app
+Allow: /how-it-works
+Allow: /features
+Allow: /privacy
+Allow: /terms
+
+# Crawl-delay
+Crawl-delay: 10 

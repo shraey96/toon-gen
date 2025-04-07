@@ -9,9 +9,9 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "ZappyToon - Transform Your Photos into AI Art",
+  title: "ZappyToon - Transform Your Photos into Beautiful Art",
   description:
-    "Transform your photos into stunning AI-generated art with ZappyToon. Create unique, artistic images in seconds.",
+    "Transform your photos into stunning art with ZappyToon. Create unique, artistic images in seconds.",
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",
@@ -37,9 +37,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    title: "ZappyToon - Transform Your Photos into AI Art",
+    title: "ZappyToon - Transform Your Photos into Beautiful Art",
     description:
-      "Transform your photos into stunning AI-generated art with ZappyToon. Create unique, artistic images in seconds.",
+      "Transform your photos into stunning art with ZappyToon. Create unique, artistic images in seconds.",
     url: "https://zappytoon.com",
     siteName: "ZappyToon",
     images: [
@@ -47,7 +47,7 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "ZappyToon - Transform Your Photos into AI Art",
+        alt: "ZappyToon - Transform Your Photos into Beautiful Art",
       },
     ],
   },

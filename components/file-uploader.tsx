@@ -8,11 +8,13 @@ import CameraUI from "./camera-ui";
 interface FileUploaderProps {
   onFileSelect: (file: File | null) => void;
   withCamera?: boolean;
+  disabled?: boolean;
 }
 
 export default function FileUploader({
   onFileSelect,
   withCamera = false,
+  disabled = false,
 }: FileUploaderProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -62,13 +64,20 @@ export default function FileUploader({
   };
 
   return (
-    <div className="relative border-2 border-dashed rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 h-full border-white/20 hover:border-purple-400/50 hover:bg-white/10">
+    <div
+      className={`relative border-2 border-dashed rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 h-full ${
+        disabled
+          ? "opacity-50 cursor-not-allowed"
+          : "border-white/20 hover:border-purple-400/50 hover:bg-white/10"
+      }`}
+    >
       {withCamera ? (
         <CameraUI
           previewUrl={previewUrl}
           error={error}
           handleFile={handleFile}
           handleCancel={handleCancel}
+          disabled={disabled}
         />
       ) : (
         <FileDropUI
@@ -76,6 +85,7 @@ export default function FileUploader({
           error={error}
           handleFile={handleFile}
           handleCancel={handleCancel}
+          disabled={disabled}
         />
       )}
     </div>

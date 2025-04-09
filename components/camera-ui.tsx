@@ -7,8 +7,9 @@ import Countdown from "./countdown";
 interface CameraUIProps {
   previewUrl: string | null;
   error: string | null;
-  handleFile: (file: File) => Promise<void>;
+  handleFile: (file: File) => void;
   handleCancel: () => void;
+  disabled?: boolean;
 }
 
 export default function CameraUI({
@@ -16,6 +17,7 @@ export default function CameraUI({
   error,
   handleFile,
   handleCancel,
+  disabled = false,
 }: CameraUIProps) {
   const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [isCountingDown, setIsCountingDown] = useState(false);
@@ -147,7 +149,11 @@ export default function CameraUI({
   }, []);
 
   return (
-    <div className="flex flex-col justify-center h-full space-y-4">
+    <div
+      className={`flex flex-col justify-center h-full space-y-4 ${
+        disabled ? "opacity-50 cursor-not-allowed" : ""
+      }`}
+    >
       {previewUrl ? (
         <div className="relative w-full aspect-square max-h-[280px] lg:max-h-none">
           <Image
@@ -158,10 +164,12 @@ export default function CameraUI({
           />
           <button
             onClick={(e) => {
+              if (disabled) return;
               e.preventDefault();
               handleCancel();
             }}
             className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white/70 hover:text-white p-2 rounded-full transition-all duration-200"
+            disabled={disabled}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -401,6 +409,7 @@ export default function CameraUI({
               type="file"
               accept="image/*"
               onChange={(e) => {
+                if (disabled) return;
                 const file = e.target.files?.[0];
                 if (file) {
                   handleFile(file);
@@ -408,12 +417,15 @@ export default function CameraUI({
               }}
               className="hidden"
               id="camera-file-upload"
+              disabled={disabled}
             />
             <label
               htmlFor="camera-file-upload"
-              className="cursor-pointer block space-y-4 p-4 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-200"
+              className={`cursor-pointer block space-y-4 p-4 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-200 ${
+                disabled ? "cursor-not-allowed opacity-50" : ""
+              }`}
             >
-              <div className="animate-pulse">
+              <div className={`animate-pulse ${disabled ? "opacity-50" : ""}`}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"

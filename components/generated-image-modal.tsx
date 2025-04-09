@@ -2,19 +2,22 @@
 
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { formatDistanceToNow } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   X,
   Download,
+  Share2,
   Maximize2,
   Minimize2,
   Clock,
   Sparkles,
   Loader2,
 } from "lucide-react";
-import { formatDistanceToNow } from "date-fns";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { useKeydown } from "@/hooks/use-keydown";
+import { GeneratedImage } from "./app-tabs";
+import toast from "react-hot-toast";
 
 interface GeneratedImageModalProps {
   imageUrl: string | null;
@@ -22,6 +25,9 @@ interface GeneratedImageModalProps {
   onClose: () => void;
   timestamp?: number;
   style?: string;
+  images: GeneratedImage[];
+  currentImageIndex: number;
+  onNavigate: (index: number) => void;
 }
 
 export default function GeneratedImageModal({
@@ -30,10 +36,22 @@ export default function GeneratedImageModal({
   onClose,
   timestamp,
   style,
+  images,
+  currentImageIndex,
+  onNavigate,
 }: GeneratedImageModalProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const modalRef = useRef<HTMLDivElement>(null);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const [slideDirection, setSlideDirection] = useState<"left" | "right" | null>(
+    null
+  );
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  // Minimum swipe distance for navigation (in pixels)
+  const minSwipeDistance = 50;
 
   useEffect(() => {
     if (showModal) {
@@ -47,13 +65,24 @@ export default function GeneratedImageModal({
     };
   }, [showModal]);
 
+  // Reset animation state when image changes
+  useEffect(() => {
+    if (isAnimating) {
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+        setSlideDirection(null);
+      }, 300); // Match this with CSS transition duration
+      return () => clearTimeout(timer);
+    }
+  }, [isAnimating]);
+
   const closeModal = () => {
     setIsFullscreen(false);
     onClose();
   };
 
   useOutsideClick({
-    ref: modalRef,
+    ref: modalRef as React.RefObject<HTMLElement>,
     callback: closeModal,
     enabled: showModal,
   });
@@ -63,6 +92,62 @@ export default function GeneratedImageModal({
     callback: closeModal,
     enabled: showModal,
   });
+
+  useKeydown({
+    key: "ArrowLeft",
+    callback: () => {
+      if (currentImageIndex > 0) {
+        setSlideDirection("right");
+        setIsAnimating(true);
+        onNavigate(currentImageIndex - 1);
+      }
+    },
+    enabled: showModal,
+  });
+
+  useKeydown({
+    key: "ArrowRight",
+    callback: () => {
+      if (currentImageIndex < images.length - 1) {
+        setSlideDirection("left");
+        setIsAnimating(true);
+        onNavigate(currentImageIndex + 1);
+      }
+    },
+    enabled: showModal,
+  });
+
+  const onTouchStart = (e: React.TouchEvent) => {
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+
+    if (isLeftSwipe && currentImageIndex < images.length - 1) {
+      setSlideDirection("left");
+      setIsAnimating(true);
+      onNavigate(currentImageIndex + 1);
+    }
+
+    if (isRightSwipe && currentImageIndex > 0) {
+      setSlideDirection("right");
+      setIsAnimating(true);
+      onNavigate(currentImageIndex - 1);
+    }
+
+    setTouchStart(null);
+    setTouchEnd(null);
+  };
 
   if (!showModal || !imageUrl) return null;
 
@@ -83,8 +168,57 @@ export default function GeneratedImageModal({
     }
   };
 
+  const handleShare = async () => {
+    try {
+      if (navigator.share && imageUrl) {
+        await navigator.share({
+          title: "Check out my AI-generated artwork!",
+          text: "Created with ZappyToon",
+          url: imageUrl,
+        });
+      } else {
+        await navigator.clipboard.writeText(imageUrl || "");
+        toast.success("Image URL copied to clipboard!");
+      }
+    } catch (error) {
+      console.error("Error sharing:", error);
+      // Fallback to copying URL
+      if (imageUrl) {
+        await navigator.clipboard.writeText(imageUrl);
+        toast.success("Image URL copied to clipboard!");
+      }
+    }
+  };
+
   const toggleFullscreen = () => {
     setIsFullscreen(!isFullscreen);
+  };
+
+  const handlePrevious = () => {
+    if (currentImageIndex > 0) {
+      setSlideDirection("right");
+      setIsAnimating(true);
+      onNavigate(currentImageIndex - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (currentImageIndex < images.length - 1) {
+      setSlideDirection("left");
+      setIsAnimating(true);
+      onNavigate(currentImageIndex + 1);
+    }
+  };
+
+  const getSlideAnimation = () => {
+    if (!isAnimating) return "";
+    if (slideDirection === "left") {
+      return "animate-in slide-in-from-right duration-300";
+    }
+    if (slideDirection === "right") {
+      return "animate-in slide-in-from-left duration-300";
+    }
+    return "";
   };
 
   return (
@@ -99,7 +233,15 @@ export default function GeneratedImageModal({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 sm:h-10 sm:w-10 text-white/70 hover:text-white hover:bg-white/10"
+            className="h-8 w-8 sm:h-10 sm:w-10 text-purple-400 hover:text-purple-300 hover:bg-purple-400/10 transition-colors"
+            onClick={handleShare}
+          >
+            <Share2 className="h-4 w-4 sm:h-5 sm:w-5" />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 sm:h-10 sm:w-10 text-lime-400 hover:text-lime-300 hover:bg-lime-400/10 transition-colors"
             onClick={handleDownload}
           >
             <Download className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -107,19 +249,7 @@ export default function GeneratedImageModal({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 sm:h-10 sm:w-10 text-white/70 hover:text-white hover:bg-white/10"
-            onClick={toggleFullscreen}
-          >
-            {isFullscreen ? (
-              <Minimize2 className="h-4 w-4 sm:h-5 sm:w-5" />
-            ) : (
-              <Maximize2 className="h-4 w-4 sm:h-5 sm:w-5" />
-            )}
-          </Button>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-8 w-8 sm:h-10 sm:w-10 text-white/70 hover:text-white hover:bg-white/10"
+            className="h-8 w-8 sm:h-10 sm:w-10 text-white/70 hover:text-white hover:bg-white/10 transition-colors"
             onClick={closeModal}
           >
             <X className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -132,19 +262,76 @@ export default function GeneratedImageModal({
               ? "h-[calc(100vh-8rem)] sm:h-[calc(100vh-12rem)]"
               : "aspect-square max-h-[60vh] sm:max-h-[70vh]"
           } w-full rounded-lg overflow-hidden`}
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+          onTouchEnd={onTouchEnd}
         >
           {isLoading && (
             <div className="absolute inset-0 flex items-center justify-center bg-black/50">
               <Loader2 className="h-6 w-6 sm:h-8 sm:w-8 animate-spin text-white" />
             </div>
           )}
-          <Image
-            src={imageUrl}
-            alt="Generated image"
-            fill
-            className="object-contain"
-            onLoadingComplete={() => setIsLoading(false)}
-          />
+          <div className={`relative w-full h-full ${getSlideAnimation()}`}>
+            <Image
+              src={imageUrl}
+              alt="Generated image"
+              fill
+              className="object-contain"
+              onLoadingComplete={() => setIsLoading(false)}
+              draggable={false}
+              priority
+            />
+          </div>
+
+          {/* Navigation Arrows */}
+          <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none">
+            {currentImageIndex > 0 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 sm:h-12 sm:w-12 text-white/70 hover:text-white hover:bg-white/10 pointer-events-auto ml-1 sm:ml-2"
+                onClick={handlePrevious}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4 sm:h-6 sm:w-6"
+                >
+                  <path d="m15 18-6-6 6-6" />
+                </svg>
+              </Button>
+            )}
+            {currentImageIndex < images.length - 1 && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8 sm:h-12 sm:w-12 text-white/70 hover:text-white hover:bg-white/10 pointer-events-auto mr-1 sm:mr-2"
+                onClick={handleNext}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-4 w-4 sm:h-6 sm:w-6"
+                >
+                  <path d="m9 18 6-6-6-6" />
+                </svg>
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="mt-2 sm:mt-4 space-y-2 sm:space-y-4">
@@ -173,7 +360,15 @@ export default function GeneratedImageModal({
           <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 justify-center">
             <Button
               variant="outline"
-              className="bg-white/5 border-white/10 text-white hover:bg-white/10 w-full sm:w-auto"
+              className="bg-white/5 border-purple-400/20 text-purple-400 hover:bg-purple-400/10 hover:text-purple-300 w-full sm:w-auto transition-colors"
+              onClick={handleShare}
+            >
+              <Share2 className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
+              Share
+            </Button>
+            <Button
+              variant="outline"
+              className="bg-white/5 border-lime-400/20 text-lime-400 hover:bg-lime-400/10 hover:text-lime-300 w-full sm:w-auto transition-colors"
               onClick={handleDownload}
             >
               <Download className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
@@ -181,7 +376,7 @@ export default function GeneratedImageModal({
             </Button>
             <Button
               variant="outline"
-              className="bg-white/5 border-white/10 text-white hover:bg-white/10 w-full sm:w-auto"
+              className="bg-white/5 border-white/10 text-white hover:bg-white/10 w-full sm:w-auto transition-colors"
               onClick={closeModal}
             >
               Close

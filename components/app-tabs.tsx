@@ -11,6 +11,7 @@ export interface GeneratedImage {
   timestamp: number;
   style: string;
   styleType: string;
+  id: string;
 }
 
 export default function AppTabs() {

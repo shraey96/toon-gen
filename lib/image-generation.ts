@@ -9,6 +9,7 @@ const FUNCTIONS_URL = `${BASE_URL}/functions/v1`;
 export interface ImageGenerationResponse {
   success: boolean;
   imageUrl?: string;
+  id?: string;
   error?: string;
 }
 
@@ -34,6 +35,7 @@ export async function generateToonImage(
     return {
       success: true,
       imageUrl: data.imageUrl,
+      id: data.id,
     };
   } catch (error) {
     console.error("Error generating toon image:", error);

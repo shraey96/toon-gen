@@ -32,7 +32,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
     setSelectedFile(file);
   };
 
-  const handleStyleSelect = (styleName: ImageGenerationStyle) => {
+  const handleStyleSelect = (styleName: ImageGenerationStyle | null) => {
     setSelectedStyle(styleName);
   };
 
@@ -56,10 +56,12 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
             APP_STYLES.find((s) => s.style === selectedStyle)?.name ||
             selectedStyle,
           styleType: selectedStyle,
+          id: result.id || "",
         });
         setShowModal(true);
       } else {
         console.error("Failed to generate image:", result.error);
+        toast.error("Failed to generate image: " + result.error);
       }
     } catch (error) {
       console.error("Error generating image:", error);
@@ -83,6 +85,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
             <div className="flex-1">
               <FileUploader
                 withCamera
+                disabled={isGenerating}
                 onFileSelect={(file) => file && handleFileSelect(file)}
               />
             </div>
@@ -96,6 +99,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
               <StyleSelector
                 selectedStyle={selectedStyle}
                 onStyleSelect={handleStyleSelect}
+                disabled={isGenerating}
               />
             </div>
           </div>
@@ -136,6 +140,9 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
         showModal={showModal}
         imageUrl={generatedImageUrl}
         onClose={() => setShowModal(false)}
+        images={[]}
+        currentImageIndex={0}
+        onNavigate={() => {}}
       />
     </div>
   );

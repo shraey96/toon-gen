@@ -14,6 +14,7 @@ export default function GalleryView({ images, onDelete }: GalleryViewProps) {
   const [selectedImage, setSelectedImage] = useState<GeneratedImage | null>(
     null
   );
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [showModal, setShowModal] = useState(false);
 
   const handleDownload = async (imageUrl: string) => {
@@ -34,8 +35,15 @@ export default function GalleryView({ images, onDelete }: GalleryViewProps) {
   };
 
   const showImageModal = (image: GeneratedImage) => {
+    const index = images.findIndex((img) => img.timestamp === image.timestamp);
+    setSelectedImageIndex(index);
     setSelectedImage(image);
     setShowModal(true);
+  };
+
+  const handleNavigate = (index: number) => {
+    setSelectedImageIndex(index);
+    setSelectedImage(images[index]);
   };
 
   if (images.length === 0) {
@@ -79,6 +87,9 @@ export default function GalleryView({ images, onDelete }: GalleryViewProps) {
             setShowModal(false);
             setSelectedImage(null);
           }}
+          images={images}
+          currentImageIndex={selectedImageIndex}
+          onNavigate={handleNavigate}
         />
       </div>
     </div>

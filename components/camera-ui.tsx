@@ -21,18 +21,36 @@ export default function CameraUI({
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [tempPhotoUrl, setTempPhotoUrl] = useState<string | null>(null);
   const [isCameraMode, setIsCameraMode] = useState(false);
+  const [currentCamera, setCurrentCamera] = useState<"user" | "environment">(
+    "user"
+  );
+  const [hasBackCamera, setHasBackCamera] = useState(false);
 
-  const startCamera = async () => {
+  const startCamera = async (facingMode: "user" | "environment" = "user") => {
     try {
       stopCamera();
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode },
+      });
       setVideoStream(stream);
       setIsCameraMode(true);
       setTempPhotoUrl(null);
+      setCurrentCamera(facingMode);
     } catch (err) {
       console.error("Camera permission denied:", err);
       setIsCameraMode(false);
     }
+  };
+
+  const handleStartCamera = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await startCamera();
+  };
+
+  const handleSwitchCamera = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const newCamera = currentCamera === "user" ? "environment" : "user";
+    await startCamera(newCamera);
   };
 
   const stopCamera = () => {
@@ -104,6 +122,24 @@ export default function CameraUI({
   const instantCapture = () => {
     capturePhoto();
   };
+
+  // Check for back camera availability
+  useEffect(() => {
+    const checkCameras = async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+        const hasBackCam = devices.some(
+          (device) =>
+            device.kind === "videoinput" &&
+            device.label.toLowerCase().includes("back")
+        );
+        setHasBackCamera(hasBackCam);
+      } catch (err) {
+        console.error("Error checking cameras:", err);
+      }
+    };
+    checkCameras();
+  }, []);
 
   // Cleanup camera on unmount
   useEffect(() => {
@@ -213,6 +249,26 @@ export default function CameraUI({
                   </svg>
                 </button>
                 <button
+                  onClick={handleSwitchCamera}
+                  className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
+                  title="Switch Camera"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                  </svg>
+                </button>
+                <button
                   onClick={stopCamera}
                   className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
                   title="Close Camera"
@@ -279,6 +335,39 @@ export default function CameraUI({
                   >
                     <circle cx="12" cy="12" r="10" />
                     <polyline points="12 6 12 12 16 14" />
+                  </svg>
+                </button>
+                <button
+                  onClick={handleSwitchCamera}
+                  disabled={!hasBackCamera || isCountingDown}
+                  className={`bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200 ${
+                    !hasBackCamera || isCountingDown
+                      ? "opacity-50 cursor-not-allowed"
+                      : ""
+                  }`}
+                  title={
+                    !hasBackCamera
+                      ? "No back camera available"
+                      : "Switch Camera"
+                  }
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d="M12 20h9" />
+                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                    <path d="M12 4h-2" />
+                    <path d="M12 8h-2" />
+                    <path d="M12 12h-2" />
+                    <path d="M12 16h-2" />
                   </svg>
                 </button>
                 <button
@@ -364,7 +453,7 @@ export default function CameraUI({
           </div>
 
           <button
-            onClick={startCamera}
+            onClick={handleStartCamera}
             className="w-full p-4 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-200"
           >
             <svg

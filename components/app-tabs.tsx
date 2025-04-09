@@ -10,6 +10,7 @@ export interface GeneratedImage {
   url: string;
   timestamp: number;
   style: string;
+  styleType: string;
 }
 
 export default function AppTabs() {
@@ -23,8 +24,12 @@ export default function AppTabs() {
     }
   }, []);
 
-  const addGeneratedImage = (image: GeneratedImage) => {
-    const newImages = [image, ...generatedImages];
+  const addGeneratedImage = (image: Omit<GeneratedImage, "timestamp">) => {
+    const newImage = {
+      ...image,
+      timestamp: Date.now(),
+    };
+    const newImages = [newImage, ...generatedImages];
     setGeneratedImages(newImages);
     localStorage.setItem("generatedImages", JSON.stringify(newImages));
   };
@@ -38,6 +43,14 @@ export default function AppTabs() {
       setGeneratedImages(validImages);
       localStorage.setItem("generatedImages", JSON.stringify(validImages));
     }
+  };
+
+  const handleDeleteImage = (imageToDelete: GeneratedImage) => {
+    const newImages = generatedImages.filter(
+      (image) => image.timestamp !== imageToDelete.timestamp
+    );
+    setGeneratedImages(newImages);
+    localStorage.setItem("generatedImages", JSON.stringify(newImages));
   };
 
   useEffect(() => {
@@ -74,7 +87,7 @@ export default function AppTabs() {
         <CreateView onImageGenerated={addGeneratedImage} />
       </TabsContent>
       <TabsContent value="gallery" className="mt-0 border-none">
-        <GalleryView images={generatedImages} />
+        <GalleryView images={generatedImages} onDelete={handleDeleteImage} />
       </TabsContent>
     </Tabs>
   );

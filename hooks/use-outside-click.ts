@@ -1,12 +1,12 @@
 import { useEffect, RefObject } from "react";
 
-interface UseOutsideClickProps<T extends HTMLElement> {
+interface UseOutsideClickProps<T extends HTMLElement = HTMLElement> {
   ref: RefObject<T>;
   callback: () => void;
   enabled?: boolean;
 }
 
-export function useOutsideClick<T extends HTMLElement>({
+export function useOutsideClick<T extends HTMLElement = HTMLElement>({
   ref,
   callback,
   enabled = true,

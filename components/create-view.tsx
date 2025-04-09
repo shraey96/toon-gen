@@ -15,7 +15,7 @@ import { GeneratedImage } from "./app-tabs";
 import { APP_STYLES } from "@/constants/styles";
 
 interface CreateViewProps {
-  onImageGenerated: (image: GeneratedImage) => void;
+  onImageGenerated: (image: Omit<GeneratedImage, "timestamp">) => void;
 }
 
 export default function CreateView({ onImageGenerated }: CreateViewProps) {
@@ -52,10 +52,10 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
         setGeneratedImageUrl(result.imageUrl);
         onImageGenerated({
           url: result.imageUrl,
-          timestamp: Date.now(),
           style:
             APP_STYLES.find((s) => s.style === selectedStyle)?.name ||
             selectedStyle,
+          styleType: selectedStyle,
         });
         setShowModal(true);
       } else {

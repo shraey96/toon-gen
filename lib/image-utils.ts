@@ -1,3 +1,5 @@
+import { FUNCTIONS_URL } from "@/constants/api";
+
 export const convertToPNG = async (file: File): Promise<File> => {
   return new Promise((resolve, reject) => {
     const img = new window.Image();
@@ -29,4 +31,8 @@ export const convertToPNG = async (file: File): Promise<File> => {
     img.onerror = () => reject(new Error("Could not load image"));
     img.src = URL.createObjectURL(file);
   });
+};
+
+export const getShareableImageUrl = (imageId: string) => {
+  return `${FUNCTIONS_URL}/toon-gen-share?id=${imageId}`;
 };

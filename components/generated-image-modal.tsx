@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
+import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import {
   X,
@@ -17,7 +18,8 @@ import {
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { useKeydown } from "@/hooks/use-keydown";
 import { GeneratedImage } from "./app-tabs";
-import toast from "react-hot-toast";
+import { isMobile } from "@/lib/utils";
+import { getShareableImageUrl } from "@/lib/image-utils";
 
 interface GeneratedImageModalProps {
   imageUrl: string | null;
@@ -167,16 +169,19 @@ export default function GeneratedImageModal({
       console.error("Error downloading image:", error);
     }
   };
+  const currentImage = images[currentImageIndex];
+  const imageId = currentImage?.id;
 
   const handleShare = async () => {
     try {
-      if (navigator.share && imageUrl) {
+      if (isMobile() && navigator.share && imageId) {
         await navigator.share({
           title: "Check out my AI-generated artwork!",
           text: "Created with ZappyToon",
-          url: imageUrl,
+          url: getShareableImageUrl(imageId),
         });
       } else {
+        // On desktop or if Web Share API is not available, copy to clipboard
         await navigator.clipboard.writeText(imageUrl || "");
         toast.success("Image URL copied to clipboard!");
       }
@@ -188,10 +193,6 @@ export default function GeneratedImageModal({
         toast.success("Image URL copied to clipboard!");
       }
     }
-  };
-
-  const toggleFullscreen = () => {
-    setIsFullscreen(!isFullscreen);
   };
 
   const handlePrevious = () => {

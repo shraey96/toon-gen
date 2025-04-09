@@ -1,10 +1,6 @@
-export type ImageGenerationStyle = "GHIBLI" | "PIXAR" | "DISNEY" | "SOUTH_PARK";
+import { FUNCTIONS_URL } from "@/constants/api";
 
-const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? "http://127.0.0.1:54321"
-    : "https://linfgkrrngfrrnplcyau.supabase.co";
-const FUNCTIONS_URL = `${BASE_URL}/functions/v1`;
+export type ImageGenerationStyle = "GHIBLI" | "PIXAR" | "DISNEY" | "SOUTH_PARK";
 
 export interface ImageGenerationResponse {
   success: boolean;

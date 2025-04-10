@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import FileUploader from "@/components/file-uploader";
@@ -27,6 +27,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
     null
   );
   const [showModal, setShowModal] = useState(false);
+  const loaderRef = useRef<HTMLDivElement>(null);
 
   const handleFileSelect = (file: File) => {
     setSelectedFile(file);
@@ -43,6 +44,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
     }
 
     setIsGenerating(true);
+    loaderRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
 
     try {
       const result = await generateToonImage(selectedFile, selectedStyle);
@@ -132,7 +134,9 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
             </Button>
           )}
 
-          <GenerationLoader isGenerating={isGenerating} />
+          <div ref={loaderRef}>
+            <GenerationLoader isGenerating={isGenerating} />
+          </div>
         </div>
       </div>
 

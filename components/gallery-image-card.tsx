@@ -2,16 +2,10 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Button } from "@/components/ui/button";
 import { Download, Maximize2, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { GeneratedImage } from "./app-tabs";
-import { PLACEHOLDER_COLORS } from "@/constants/colors";
-
-const getRandomColor = () => {
-  return PLACEHOLDER_COLORS[
-    Math.floor(Math.random() * PLACEHOLDER_COLORS.length)
-  ];
-};
+import { getRandomColor } from "@/lib/utils";
 
 interface GalleryImageCardProps {
   image: GeneratedImage;

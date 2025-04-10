@@ -8,7 +8,7 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const OG_IMAGE_PATH = "/images/og-desktop.png";
+const OG_IMAGE_PATH = "/images/og-desktop-1.png";
 
 export const metadata: Metadata = {
   title: "ZappyToon - Transform Your Photos into Beautiful Art",

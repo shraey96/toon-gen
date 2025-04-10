@@ -5,16 +5,7 @@ import Image from "next/image";
 import { formatDistanceToNow } from "date-fns";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
-import {
-  X,
-  Download,
-  Share2,
-  Maximize2,
-  Minimize2,
-  Clock,
-  Sparkles,
-  Loader2,
-} from "lucide-react";
+import { X, Download, Share2, Clock, Sparkles, Loader2 } from "lucide-react";
 import { useOutsideClick } from "@/hooks/use-outside-click";
 import { useKeydown } from "@/hooks/use-keydown";
 import { GeneratedImage } from "./app-tabs";

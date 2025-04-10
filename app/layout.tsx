@@ -8,7 +8,8 @@ import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const OG_IMAGE_PATH = "/images/og-desktop-2.png";
+const OG_IMAGE_PATH = "/images/og-desktop.png";
+const OG_IMAGE_TWITTER_PATH = "/images/og-twitter.png";
 
 export const metadata: Metadata = {
   title: "ZappyToon - Transform Your Photos into Beautiful Art",
@@ -58,7 +59,7 @@ export const metadata: Metadata = {
     title: "ZappyToon - Transform Your Photos into AI Art",
     description:
       "Transform your photos into stunning AI-generated artwork. Choose from various artistic styles and create unique digital masterpieces.",
-    images: [OG_IMAGE_PATH],
+    images: [OG_IMAGE_TWITTER_PATH],
   },
   robots: {
     index: true,

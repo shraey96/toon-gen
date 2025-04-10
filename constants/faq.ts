@@ -27,8 +27,8 @@ export const FAQS = [
   },
   {
     id: "item-5",
-    question: "Can I cancel my subscription?",
+    question: "What should I know about AI-generated results?",
     answer:
-      "Yes, you can cancel your subscription at any time. If you cancel within the first 7 days, you'll receive a full refund. After that, your subscription will remain active until the end of your billing period, and you won't be charged again.",
+      "Our AI models are continuously evolving and may produce varying results. While we strive for high-quality transformations, the output may not always perfectly match your expectations. Factors like image quality, composition, and style complexity can affect the results. We recommend experimenting with different styles to find the best match for your images.",
   },
 ];

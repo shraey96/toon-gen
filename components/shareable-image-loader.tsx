@@ -5,7 +5,7 @@ import { getRandomColor } from "@/lib/utils";
 
 export function ShareableImageLoader() {
   const [currentColor, setCurrentColor] = useState(getRandomColor());
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = true;
 
   useEffect(() => {
     const interval = setInterval(() => {

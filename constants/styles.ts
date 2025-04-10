@@ -12,8 +12,8 @@ export const APP_STYLES = [
     hoverColor: "hover:bg-lime-400",
   },
   {
-    name: "Ghibli",
-    style: "GHIBLI",
+    name: "Modern Ghibli",
+    style: "MODERN_GHIBLI",
     image: animeImage,
     badgeColor: "bg-purple-400/90",
     textColor: "text-white",

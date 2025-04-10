@@ -24,12 +24,6 @@ export default function Footer() {
             >
               Privacy
             </Link>
-            <Link
-              href="/help"
-              className="text-sm text-white/60 hover:text-white"
-            >
-              Help
-            </Link>
           </nav>
 
           <div className="text-sm text-white/70">

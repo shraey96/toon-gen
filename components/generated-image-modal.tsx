@@ -21,6 +21,7 @@ interface GeneratedImageModalProps {
   images: GeneratedImage[];
   currentImageIndex: number;
   onNavigate: (index: number) => void;
+  generatedImageId: string | null;
 }
 
 export default function GeneratedImageModal({
@@ -32,6 +33,7 @@ export default function GeneratedImageModal({
   images,
   currentImageIndex,
   onNavigate,
+  generatedImageId,
 }: GeneratedImageModalProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -161,12 +163,13 @@ export default function GeneratedImageModal({
     }
   };
   const currentImage = images[currentImageIndex];
-  const imageId = currentImage?.id;
 
   const handleShare = async () => {
-    const shareUrl = getShareableImageUrl(imageId);
+    const shareUrl = getShareableImageUrl(
+      currentImage?.id || generatedImageId || ""
+    );
     try {
-      if (isMobile() && navigator.share && imageId) {
+      if (isMobile() && navigator.share && shareUrl) {
         await navigator.share({
           title: "Check out my AI-generated artwork!",
           text: "Created with ZappyToon",

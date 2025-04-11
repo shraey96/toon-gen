@@ -27,6 +27,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(
     null
   );
+  const [generatedImageId, setGeneratedImageId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const loaderRef = useRef<HTMLDivElement>(null);
 
@@ -60,6 +61,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
       if (result.success && result.imageUrl) {
         toast.success("Image generated successfully");
         setGeneratedImageUrl(result.imageUrl);
+        setGeneratedImageId(result.id || "");
         onImageGenerated({
           url: result.imageUrl,
           style:
@@ -151,9 +153,11 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
         key={generatedImageUrl}
         showModal={showModal}
         imageUrl={generatedImageUrl}
+        generatedImageId={generatedImageId}
         onClose={() => {
           setShowModal(false);
           setGeneratedImageUrl(null);
+          setGeneratedImageId(null);
         }}
         images={[]}
         currentImageIndex={0}

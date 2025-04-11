@@ -164,23 +164,24 @@ export default function GeneratedImageModal({
   const imageId = currentImage?.id;
 
   const handleShare = async () => {
+    const shareUrl = getShareableImageUrl(imageId);
     try {
       if (isMobile() && navigator.share && imageId) {
         await navigator.share({
           title: "Check out my AI-generated artwork!",
           text: "Created with ZappyToon",
-          url: getShareableImageUrl(imageId),
+          url: shareUrl,
         });
       } else {
         // On desktop or if Web Share API is not available, copy to clipboard
-        await navigator.clipboard.writeText(imageUrl || "");
+        await navigator.clipboard.writeText(shareUrl);
         toast.success("Image URL copied to clipboard!");
       }
     } catch (error) {
       console.error("Error sharing:", error);
       // Fallback to copying URL
-      if (imageUrl) {
-        await navigator.clipboard.writeText(imageUrl);
+      if (shareUrl) {
+        await navigator.clipboard.writeText(shareUrl);
         toast.success("Image URL copied to clipboard!");
       }
     }

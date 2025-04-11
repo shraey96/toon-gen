@@ -148,9 +148,13 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
       </div>
 
       <GeneratedImageModal
+        key={generatedImageUrl}
         showModal={showModal}
         imageUrl={generatedImageUrl}
-        onClose={() => setShowModal(false)}
+        onClose={() => {
+          setShowModal(false);
+          setGeneratedImageUrl(null);
+        }}
         images={[]}
         currentImageIndex={0}
         onNavigate={() => {}}

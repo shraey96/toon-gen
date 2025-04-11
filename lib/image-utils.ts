@@ -34,5 +34,5 @@ export const convertToPNG = async (file: File): Promise<File> => {
 };
 
 export const getShareableImageUrl = (imageId: string) => {
-  return `${FUNCTIONS_URL}/toon-gen-share?id=${imageId}`;
+  return `https://share.zappytoon.com/?img=${imageId}`;
 };

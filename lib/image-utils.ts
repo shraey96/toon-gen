@@ -1,4 +1,4 @@
-import { FUNCTIONS_URL } from "@/constants/api";
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 export const convertToPNG = async (file: File): Promise<File> => {
   return new Promise((resolve, reject) => {
@@ -35,4 +35,25 @@ export const convertToPNG = async (file: File): Promise<File> => {
 
 export const getShareableImageUrl = (imageId: string) => {
   return `https://share.zappytoon.com/?img=${imageId}`;
+};
+
+export const downloadImage = async (imageUrl: string, extraConfig = {}) => {
+  trackAnalytics(ANALYTICS_EVENTS.IMAGE_DOWNLOAD_CLICKED, {
+    image_url: imageUrl,
+    ...extraConfig,
+  });
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `generated-image-${Date.now()}.png`;
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    document.body.removeChild(a);
+  } catch (error) {
+    console.error("Error downloading image:", error);
+  }
 };

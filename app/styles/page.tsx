@@ -31,7 +31,7 @@ export default function StylesPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {APP_STYLES.map((style, index) => (
+          {APP_STYLES.map((style) => (
             <div
               key={style.name}
               className="relative aspect-square rounded-xl overflow-hidden border border-white/10 hover:border-white/30 transition-all duration-300 group cursor-pointer animate-in fade-in slide-in-from-bottom-4"

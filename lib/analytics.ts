@@ -25,6 +25,8 @@ export const ANALYTICS_EVENTS = {
   GALLERY_VIEWED: "Gallery Viewed",
 
   GENERATE_IMAGE_CLICKED: "Generate Image Clicked",
+
+  IMAGE_DOWNLOAD_CLICKED: "Image Download Clicked",
 };
 
 export const trackAnalytics = (eventName = "", config = {}) => {

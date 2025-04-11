@@ -10,7 +10,7 @@ import { useOutsideClick } from "@/hooks/use-outside-click";
 import { useKeydown } from "@/hooks/use-keydown";
 import { GeneratedImage } from "./app-tabs";
 import { isMobile } from "@/lib/utils";
-import { getShareableImageUrl } from "@/lib/image-utils";
+import { getShareableImageUrl, downloadImage } from "@/lib/image-utils";
 
 interface GeneratedImageModalProps {
   imageUrl: string | null;
@@ -147,19 +147,8 @@ export default function GeneratedImageModal({
   if (!showModal || !imageUrl) return null;
 
   const handleDownload = async () => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `generated-image-${Date.now()}.png`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error("Error downloading image:", error);
+    if (imageUrl) {
+      await downloadImage(imageUrl);
     }
   };
   const currentImage = images[currentImageIndex];

@@ -1,11 +1,21 @@
-import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
+import { Sparkles } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { HOW_IT_WORKS_STEPS } from "@/constants/how-it-works";
-import { Sparkles } from "lucide-react";
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 export default function HowItWorks() {
+  useEffect(() => {
+    trackAnalytics(ANALYTICS_EVENTS.PAGE_VIEWED, {
+      page: "How It Works",
+    });
+  }, []);
+
   return (
     <main className="flex-1 bg-gradient-to-b from-black to-gray-900">
       <div className="container px-3 sm:px-4 md:px-6 py-6 md:py-16">

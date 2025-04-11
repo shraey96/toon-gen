@@ -13,6 +13,7 @@ import {
 } from "@/lib/image-generation";
 import { GeneratedImage } from "./app-tabs";
 import { APP_STYLES } from "@/constants/styles";
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 interface CreateViewProps {
   onImageGenerated: (image: Omit<GeneratedImage, "timestamp">) => void;
@@ -35,6 +36,9 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
 
   const handleStyleSelect = (styleName: ImageGenerationStyle | null) => {
     setSelectedStyle(styleName);
+    trackAnalytics(ANALYTICS_EVENTS.STYLE_SELECTED, {
+      style: styleName,
+    });
   };
 
   const handleGenerateImage = async () => {
@@ -42,6 +46,10 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
       console.error("Please select both an image and a style");
       return;
     }
+
+    trackAnalytics(ANALYTICS_EVENTS.GENERATE_IMAGE_CLICKED, {
+      style: selectedStyle,
+    });
 
     setIsGenerating(true);
     loaderRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });

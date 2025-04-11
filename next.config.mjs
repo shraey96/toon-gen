@@ -14,6 +14,9 @@ try {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: "export",
+  env: {
+    MIXPANEL_PROJECT_TOKEN: process.env.MIXPANEL_PROJECT_TOKEN,
+  },
   eslint: {
     ignoreDuringBuilds: true,
   },

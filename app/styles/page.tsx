@@ -1,10 +1,19 @@
-import { Badge } from "@/components/ui/badge";
-import { Sparkles } from "lucide-react";
-import Image from "next/image";
+"use client";
 
+import { useEffect } from "react";
+import Image from "next/image";
+import { Sparkles } from "lucide-react";
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
+import { Badge } from "@/components/ui/badge";
 import { APP_STYLES } from "@/constants/styles";
 
 export default function StylesPage() {
+  useEffect(() => {
+    trackAnalytics(ANALYTICS_EVENTS.PAGE_VIEWED, {
+      page: "Styles",
+    });
+  }, []);
+
   return (
     <main className="flex-1 bg-gradient-to-b from-black to-gray-900">
       <div className="container px-4 py-16">

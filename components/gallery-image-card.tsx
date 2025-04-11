@@ -22,11 +22,29 @@ export default function GalleryImageCard({
 }: GalleryImageCardProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [placeholderColor] = useState(getRandomColor());
+  const [showControls, setShowControls] = useState(false);
+  const [touchTimer, setTouchTimer] = useState<NodeJS.Timeout | null>(null);
+
+  const handleTouchStart = () => {
+    const timer = setTimeout(() => {
+      setShowControls(true);
+    }, 500); // 500ms for long press
+    setTouchTimer(timer);
+  };
+
+  const handleTouchEnd = () => {
+    if (touchTimer) {
+      clearTimeout(touchTimer);
+      setTouchTimer(null);
+    }
+  };
 
   return (
     <div
       className="relative group aspect-square rounded-xl overflow-hidden border border-white/10 hover:border-white/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-xl hover:shadow-purple-500/10 cursor-pointer"
       onClick={() => onView(image)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       {/* Placeholder color */}
       <div
@@ -46,7 +64,11 @@ export default function GalleryImageCard({
         }`}
         onLoadingComplete={() => setIsLoading(false)}
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div
+        className={`absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent transition-opacity duration-300 ${
+          showControls ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+        }`}
+      >
         <div className="absolute bottom-0 left-0 right-0 p-1.5 sm:p-2">
           <div className="flex justify-between items-center">
             <span className="text-[10px] sm:text-xs text-white bg-black/50 px-1.5 sm:px-2 py-0.5 rounded-full truncate max-w-[100px] sm:max-w-[120px]">

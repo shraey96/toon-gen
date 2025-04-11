@@ -1,15 +1,16 @@
+"use client";
+
+import { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import {
-  Sparkles,
-  Zap,
-  Image as ImageIcon,
-  Palette,
-  Wand2,
-  Shield,
-} from "lucide-react";
 import { FEATURES } from "@/constants/features";
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 export default function FeaturesPage() {
+  useEffect(() => {
+    trackAnalytics(ANALYTICS_EVENTS.PAGE_VIEWED, {
+      page: "Features",
+    });
+  }, []);
   return (
     <main className="flex-1 bg-gradient-to-b from-black to-gray-900">
       <div className="container px-4 py-16">

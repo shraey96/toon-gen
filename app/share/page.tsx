@@ -1,12 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import { ShareableImageLoader } from "@/components/shareable-image-loader";
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 function SharePage() {
   const searchParams = useSearchParams();
@@ -16,6 +15,11 @@ function SharePage() {
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
+
+    trackAnalytics(ANALYTICS_EVENTS.PAGE_VIEWED, {
+      image_url: imageUrl,
+    });
+
     return () => {
       document.body.style.overflow = "auto";
     };

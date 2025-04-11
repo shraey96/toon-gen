@@ -5,6 +5,7 @@ import { Sparkles, Image as ImageIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import CreateView from "@/components/create-view";
 import GalleryView from "@/components/gallery-view";
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
 
 export interface GeneratedImage {
   url: string;
@@ -60,8 +61,18 @@ export default function AppTabs() {
     return () => clearInterval(interval);
   }, [generatedImages]);
 
+  const handleTabChange = (value: string) => {
+    trackAnalytics(ANALYTICS_EVENTS.TAB_CHANGED, {
+      tab: value,
+    });
+  };
+
   return (
-    <Tabs defaultValue="create" className="w-full">
+    <Tabs
+      defaultValue="create"
+      className="w-full"
+      onValueChange={handleTabChange}
+    >
       <div className="container py-4">
         <TabsList className="h-12 p-1 bg-transparent">
           <TabsTrigger

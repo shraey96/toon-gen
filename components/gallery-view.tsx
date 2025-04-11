@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GeneratedImage } from "./app-tabs";
 import GeneratedImageModal from "./generated-image-modal";
 import GalleryImageCard from "./gallery-image-card";
-
+import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
 interface GalleryViewProps {
   images: GeneratedImage[];
   onDelete?: (image: GeneratedImage) => void;
@@ -45,6 +45,12 @@ export default function GalleryView({ images, onDelete }: GalleryViewProps) {
     setSelectedImageIndex(index);
     setSelectedImage(images[index]);
   };
+
+  useEffect(() => {
+    trackAnalytics(ANALYTICS_EVENTS.GALLERY_VIEWED, {
+      images: images?.length ?? [],
+    });
+  }, []);
 
   if (images.length === 0) {
     return (

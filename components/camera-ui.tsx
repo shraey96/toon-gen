@@ -1,11 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
+import { useState, useEffect, useRef } from "react";
 import Countdown from "./countdown";
 
 interface CameraUIProps {
-  previewUrl: string | null;
   error: string | null;
   handleFile: (file: File) => void;
   handleCancel: () => void;
@@ -13,40 +11,42 @@ interface CameraUIProps {
 }
 
 export default function CameraUI({
-  previewUrl,
   error,
   handleFile,
   handleCancel,
   disabled = false,
 }: CameraUIProps) {
-  const [videoStream, setVideoStream] = useState<MediaStream | null>(null);
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [tempPhotoUrl, setTempPhotoUrl] = useState<string | null>(null);
-  const [isCameraMode, setIsCameraMode] = useState(false);
   const [currentCamera, setCurrentCamera] = useState<"user" | "environment">(
     "user"
   );
   const [hasBackCamera, setHasBackCamera] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const startCamera = async (facingMode: "user" | "environment" = "user") => {
     try {
-      stopCamera();
+      // Stop any existing stream first
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop());
+        streamRef.current = null;
+      }
+
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode },
       });
-      setVideoStream(stream);
-      setIsCameraMode(true);
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+
+      streamRef.current = stream;
       setTempPhotoUrl(null);
       setCurrentCamera(facingMode);
     } catch (err) {
       console.error("Camera permission denied:", err);
-      setIsCameraMode(false);
     }
-  };
-
-  const handleStartCamera = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    await startCamera();
   };
 
   const handleSwitchCamera = async (e: React.MouseEvent) => {
@@ -56,11 +56,13 @@ export default function CameraUI({
   };
 
   const stopCamera = () => {
-    if (videoStream) {
-      videoStream.getTracks().forEach((track) => track.stop());
-      setVideoStream(null);
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((track) => track.stop());
+      streamRef.current = null;
     }
-    setIsCameraMode(false);
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
     setTempPhotoUrl(null);
     setIsCountingDown(false);
   };
@@ -75,16 +77,15 @@ export default function CameraUI({
   };
 
   const capturePhoto = () => {
-    const video = document.querySelector("video");
-    if (!video) return;
+    if (!videoRef.current) return;
 
     const canvas = document.createElement("canvas");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
+    canvas.width = videoRef.current.videoWidth;
+    canvas.height = videoRef.current.videoHeight;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    ctx.drawImage(video, 0, 0);
+    ctx.drawImage(videoRef.current, 0, 0);
     const tempUrl = canvas.toDataURL("image/jpeg");
     setTempPhotoUrl(tempUrl);
   };
@@ -119,6 +120,7 @@ export default function CameraUI({
   const retakePhoto = () => {
     setTempPhotoUrl(null);
     setIsCountingDown(false);
+    startCamera(currentCamera);
   };
 
   const instantCapture = () => {
@@ -143,9 +145,12 @@ export default function CameraUI({
     checkCameras();
   }, []);
 
-  // Cleanup camera on unmount
+  // Start camera when component mounts and cleanup on unmount
   useEffect(() => {
-    return () => stopCamera();
+    startCamera();
+    return () => {
+      stopCamera();
+    };
   }, []);
 
   return (
@@ -154,108 +159,68 @@ export default function CameraUI({
         disabled ? "opacity-50 cursor-not-allowed" : ""
       }`}
     >
-      {previewUrl ? (
-        <div className="relative w-full aspect-square max-h-[280px] lg:max-h-none">
-          <Image
-            src={previewUrl}
-            alt="Preview"
-            fill
-            className="object-contain rounded-lg"
-          />
-          <button
-            onClick={(e) => {
-              if (disabled) return;
-              e.preventDefault();
-              handleCancel();
-            }}
-            className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white/70 hover:text-white p-2 rounded-full transition-all duration-200"
-            disabled={disabled}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </div>
-      ) : isCameraMode ? (
-        <div className="relative w-full aspect-video">
-          <video
-            autoPlay
-            playsInline
-            className={`w-full h-full rounded-lg ${
-              tempPhotoUrl ? "hidden" : ""
-            }`}
-            ref={(videoEl) => {
-              if (videoEl && videoStream) {
-                videoEl.srcObject = videoStream;
-              }
-            }}
-          />
-          {tempPhotoUrl && (
-            <div className="relative w-full aspect-video">
-              <Image
-                src={tempPhotoUrl}
-                alt="Captured photo"
-                fill
-                className="object-contain rounded-lg"
-              />
-            </div>
-          )}
-          {isCountingDown && !tempPhotoUrl && (
-            <Countdown initialCount={5} onComplete={handleCountdownComplete} />
-          )}
-          <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
-            {tempPhotoUrl ? (
-              <>
-                <button
-                  onClick={confirmPhoto}
-                  className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full transition-all duration-200"
-                  title="Use Photo"
+      <div className="relative w-full aspect-video">
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          className={`w-full h-full rounded-lg ${tempPhotoUrl ? "hidden" : ""}`}
+        />
+        {tempPhotoUrl && (
+          <div className="relative w-full aspect-video">
+            <img
+              src={tempPhotoUrl}
+              alt="Captured photo"
+              className="w-full h-full object-contain rounded-lg"
+            />
+          </div>
+        )}
+        {isCountingDown && !tempPhotoUrl && (
+          <Countdown initialCount={5} onComplete={handleCountdownComplete} />
+        )}
+        <div className="absolute bottom-4 left-0 right-0 flex justify-center space-x-4">
+          {tempPhotoUrl ? (
+            <>
+              <button
+                onClick={confirmPhoto}
+                className="bg-green-500 hover:bg-green-600 text-white p-3 rounded-full transition-all duration-200"
+                title="Use Photo"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <polyline points="20 6 9 17 4 12" />
-                  </svg>
-                </button>
-                <button
-                  onClick={retakePhoto}
-                  className="bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-full transition-all duration-200"
-                  title="Retake Photo"
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </button>
+              <button
+                onClick={retakePhoto}
+                className="bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-full transition-all duration-200"
+                title="Retake Photo"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d="M3 2v6h6" />
-                    <path d="M3 13a9 9 0 1 0 3-7.7L3 8" />
-                  </svg>
-                </button>
+                  <path d="M3 2v6h6" />
+                  <path d="M3 13a9 9 0 1 0 3-7.7L3 8" />
+                </svg>
+              </button>
+              {hasBackCamera && (
                 <button
                   onClick={handleSwitchCamera}
                   className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
@@ -276,88 +241,84 @@ export default function CameraUI({
                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
                   </svg>
                 </button>
-                <button
-                  onClick={stopCamera}
-                  className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
-                  title="Close Camera"
+              )}
+              <button
+                onClick={() => {
+                  stopCamera();
+                  handleCancel();
+                }}
+                className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
+                title="Close Camera"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={instantCapture}
-                  disabled={isCountingDown}
-                  className={`bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-full transition-all duration-200 ${
-                    isCountingDown ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  title="Capture Now"
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={instantCapture}
+                disabled={isCountingDown}
+                className={`bg-purple-500 hover:bg-purple-600 text-white p-3 rounded-full transition-all duration-200 ${
+                  isCountingDown ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                title="Capture Now"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="3" />
-                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                  </svg>
-                </button>
-                <button
-                  onClick={startCountdown}
-                  disabled={isCountingDown}
-                  className={`bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-all duration-200 ${
-                    isCountingDown ? "opacity-50 cursor-not-allowed" : ""
-                  }`}
-                  title={isCountingDown ? `Capturing in 5s` : "5s Timer"}
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                </svg>
+              </button>
+              <button
+                onClick={startCountdown}
+                disabled={isCountingDown}
+                className={`bg-blue-500 hover:bg-blue-600 text-white p-3 rounded-full transition-all duration-200 ${
+                  isCountingDown ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+                title={isCountingDown ? `Capturing in 5s` : "5s Timer"}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <circle cx="12" cy="12" r="10" />
-                    <polyline points="12 6 12 12 16 14" />
-                  </svg>
-                </button>
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+              </button>
+              {hasBackCamera && (
                 <button
                   onClick={handleSwitchCamera}
-                  disabled={!hasBackCamera || isCountingDown}
-                  className={`bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200 ${
-                    !hasBackCamera || isCountingDown
-                      ? "opacity-50 cursor-not-allowed"
-                      : ""
-                  }`}
-                  title={
-                    !hasBackCamera
-                      ? "No back camera available"
-                      : "Switch Camera"
-                  }
+                  className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
+                  title="Switch Camera"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -372,125 +333,36 @@ export default function CameraUI({
                   >
                     <path d="M12 20h9" />
                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                    <path d="M12 4h-2" />
-                    <path d="M12 8h-2" />
-                    <path d="M12 12h-2" />
-                    <path d="M12 16h-2" />
                   </svg>
                 </button>
-                <button
-                  onClick={stopCamera}
-                  className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
-                  title="Close Camera"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <line x1="18" y1="6" x2="6" y2="18" />
-                    <line x1="6" y1="6" x2="18" y2="18" />
-                  </svg>
-                </button>
-              </>
-            )}
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) => {
-                if (disabled) return;
-                const file = e.target.files?.[0];
-                if (file) {
-                  handleFile(file);
-                }
-              }}
-              className="hidden"
-              id="camera-file-upload"
-              disabled={disabled}
-            />
-            <label
-              htmlFor="camera-file-upload"
-              className={`cursor-pointer block space-y-4 p-4 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-200 ${
-                disabled ? "cursor-not-allowed opacity-50" : ""
-              }`}
-            >
-              <div className={`animate-pulse ${disabled ? "opacity-50" : ""}`}>
+              )}
+              <button
+                onClick={() => {
+                  stopCamera();
+                  handleCancel();
+                }}
+                className="bg-gray-500 hover:bg-gray-600 text-white p-3 rounded-full transition-all duration-200"
+                title="Close Camera"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  className="h-8 w-8 text-purple-400 mx-auto"
                 >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="17 8 12 3 7 8" />
-                  <line x1="12" y1="3" x2="12" y2="15" />
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
                 </svg>
-              </div>
-              <p className="text-white/70 text-center">
-                Upload from device
-                <br />
-                <span className="text-sm">
-                  Supported: JPG, PNG, WEBP (Max 5MB)
-                </span>
-              </p>
-            </label>
-          </div>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/20"></div>
-            </div>
-            <div className="relative flex justify-center">
-              <span className="bg-[#09090b] px-2 text-sm text-white/50">
-                or
-              </span>
-            </div>
-          </div>
-
-          <button
-            onClick={handleStartCamera}
-            className="w-full p-4 border border-white/20 rounded-lg hover:bg-white/5 transition-all duration-200"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="h-8 w-8 text-purple-400 mx-auto mb-4"
-            >
-              <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-              <circle cx="12" cy="13" r="3" />
-            </svg>
-            <p className="text-white/70 text-center">
-              Take a picture
-              <br />
-              <span className="text-sm">Using your device camera</span>
-            </p>
-          </button>
+              </button>
+            </>
+          )}
         </div>
-      )}
+      </div>
       {error && (
         <p className="text-red-400 text-sm text-center mt-4 mb-2">{error}</p>
       )}

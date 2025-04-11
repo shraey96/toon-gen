@@ -94,7 +94,6 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
             </h2>
             <div className="flex-1">
               <FileUploader
-                withCamera
                 disabled={isGenerating}
                 onFileSelect={(file) => file && handleFileSelect(file)}
               />

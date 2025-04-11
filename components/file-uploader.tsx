@@ -3,21 +3,22 @@
 import { useState } from "react";
 import { convertToPNG } from "@/lib/image-utils";
 import FileDropUI from "./file-drop-ui";
+import FileUpload from "./file-upload";
 import CameraUI from "./camera-ui";
+import Image from "next/image";
 
 interface FileUploaderProps {
   onFileSelect: (file: File | null) => void;
-  withCamera?: boolean;
   disabled?: boolean;
 }
 
 export default function FileUploader({
   onFileSelect,
-  withCamera = false,
   disabled = false,
 }: FileUploaderProps) {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [isCameraMode, setIsCameraMode] = useState(false);
 
   const validateFile = (file: File) => {
     if (!file.type.startsWith("image/")) {
@@ -56,6 +57,7 @@ export default function FileUploader({
     setPreviewUrl(null);
     setError(null);
     onFileSelect(null);
+    setIsCameraMode(false);
     // Reset the file input
     const fileInput = document.getElementById(
       "file-upload"
@@ -64,30 +66,101 @@ export default function FileUploader({
   };
 
   return (
-    <div
-      className={`relative border-2 border-dashed rounded-xl p-6 bg-white/5 backdrop-blur-sm transition-all duration-300 h-full ${
-        disabled
-          ? "opacity-50 cursor-not-allowed"
-          : "border-white/20 hover:border-purple-400/50 hover:bg-white/10"
-      }`}
+    <FileDropUI
+      onFileDrop={handleFile}
+      showDropOverlay={!isCameraMode && !previewUrl}
     >
-      {withCamera ? (
+      {previewUrl ? (
+        <div className="relative w-full aspect-square max-h-[280px] lg:max-h-none">
+          <Image
+            src={previewUrl}
+            alt="Preview"
+            fill
+            className="object-contain rounded-lg"
+          />
+          <button
+            onClick={(e) => {
+              if (disabled) return;
+              e.preventDefault();
+              handleCancel();
+            }}
+            className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white/70 hover:text-white p-2 rounded-full transition-all duration-200"
+            disabled={disabled}
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
+        </div>
+      ) : isCameraMode ? (
         <CameraUI
-          previewUrl={previewUrl}
           error={error}
           handleFile={handleFile}
           handleCancel={handleCancel}
           disabled={disabled}
         />
       ) : (
-        <FileDropUI
-          previewUrl={previewUrl}
-          error={error}
-          handleFile={handleFile}
-          handleCancel={handleCancel}
-          disabled={disabled}
-        />
+        <div className="space-y-8">
+          <FileUpload
+            error={error}
+            handleFile={handleFile}
+            handleCancel={handleCancel}
+            disabled={disabled}
+          />
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-white/20"></div>
+            </div>
+            <div className="relative flex justify-center">
+              <span className="bg-[#09090b] px-2 text-sm text-white/50">
+                or
+              </span>
+            </div>
+          </div>
+
+          <button
+            onClick={() => setIsCameraMode(true)}
+            className="w-full border border-white/20 rounded-lg p-8 hover:bg-white/5 transition-all duration-200"
+          >
+            <div className="space-y-4">
+              <div className={`${disabled ? "opacity-50" : ""}`}>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  className="h-8 w-8 text-purple-400 mx-auto"
+                >
+                  <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                  <circle cx="12" cy="13" r="3" />
+                </svg>
+              </div>
+              <p className="text-white/70 text-center">
+                Take a picture
+                <br />
+                <span className="text-sm">Using your device camera</span>
+              </p>
+            </div>
+          </button>
+        </div>
       )}
-    </div>
+    </FileDropUI>
   );
 }

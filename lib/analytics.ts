@@ -1,5 +1,5 @@
 import mixpanel from "mixpanel-browser";
-console.log("mixpanel", mixpanel);
+
 const isDev = process.env.NODE_ENV === "development";
 
 const MIXPANEL_PROJECT_TOKEN = process.env.MIXPANEL_PROJECT_TOKEN;

@@ -52,6 +52,11 @@ export default function Hero() {
               with just one click. Unlimited transformations for a limited time!
             </p>
 
+            <p className="text-sm sm:text-base text-purple-300/90 flex items-center gap-2">
+              <span className="animate-pulse">★</span>
+              No signup required - start creating instantly!
+            </p>
+
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2 sm:pt-4">
               <Link href="/app" className="w-full sm:w-auto">
                 <Button

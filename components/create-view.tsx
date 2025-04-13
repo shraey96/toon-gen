@@ -11,9 +11,9 @@ import {
   generateToonImage,
   ImageGenerationStyle,
 } from "@/lib/image-generation";
-import { GeneratedImage } from "./app-tabs";
-import { APP_STYLES } from "@/constants/styles";
 import { trackAnalytics, ANALYTICS_EVENTS } from "@/lib/analytics";
+import { APP_STYLES } from "@/constants/styles";
+import { GeneratedImage } from "./app-tabs";
 
 interface CreateViewProps {
   onImageGenerated: (image: Omit<GeneratedImage, "timestamp">) => void;

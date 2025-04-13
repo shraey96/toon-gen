@@ -17,6 +17,7 @@ function SharePage() {
   useEffect(() => {
     trackAnalytics(ANALYTICS_EVENTS.PAGE_VIEWED, {
       image_url: imageUrl,
+      page: "Share",
     });
   }, []);
 

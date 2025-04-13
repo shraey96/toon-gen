@@ -1,6 +1,7 @@
 import pixarImage from "@/images/styles/pixar.png";
 import modernGhibliImage from "@/images/styles/modern_ghibli.png";
 import southparkImage from "@/images/styles/southpark.png";
+import vintageImage from "@/images/styles/vintage.png";
 
 export const APP_STYLES = [
   {
@@ -32,5 +33,15 @@ export const APP_STYLES = [
     hoverColor: "hover:bg-pink-400",
     description:
       "Convert your photos into the iconic South Park paper-cutout style. This transformation creates simple, bold characters with distinctive outlines and flat colors, perfect for comedic and satirical effects.",
+  },
+  {
+    name: "Vintage",
+    style: "VINTAGE",
+    image: vintageImage,
+    badgeColor: "bg-amber-400/90",
+    textColor: "text-black",
+    hoverColor: "hover:bg-amber-400",
+    description:
+      "Give your images a timeless, nostalgic look with our vintage style. This transformation adds warm, sepia tones and subtle grain effects to create a classic, retro aesthetic reminiscent of old photographs.",
   },
 ];

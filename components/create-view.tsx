@@ -119,7 +119,7 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
         <div className="mt-4 sm:mt-8 flex flex-col items-center gap-4">
           <Button
             size="lg"
-            className="w-full sm:w-auto bg-lime-400 text-black hover:bg-lime-300 text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-lime-400/20"
+            className="w-full sm:w-auto bg-lime-400 text-black hover:bg-lime-300 text-base sm:text-lg transition-all duration-300 shadow-lg hover:shadow-lime-400/20 rounded-l rounded-r"
             disabled={!selectedFile || !selectedStyle || isGenerating}
             onClick={handleGenerateImage}
           >

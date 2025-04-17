@@ -8,6 +8,7 @@ interface CameraUIProps {
   handleFile: (file: File) => void;
   handleCancel: () => void;
   disabled?: boolean;
+  initialCameraType?: "user" | "environment";
 }
 
 export default function CameraUI({
@@ -15,11 +16,12 @@ export default function CameraUI({
   handleFile,
   handleCancel,
   disabled = false,
+  initialCameraType = "user",
 }: CameraUIProps) {
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [tempPhotoUrl, setTempPhotoUrl] = useState<string | null>(null);
   const [currentCamera, setCurrentCamera] = useState<"user" | "environment">(
-    "user"
+    initialCameraType
   );
   const [hasBackCamera, setHasBackCamera] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -147,11 +149,11 @@ export default function CameraUI({
 
   // Start camera when component mounts and cleanup on unmount
   useEffect(() => {
-    startCamera();
+    startCamera(initialCameraType);
     return () => {
       stopCamera();
     };
-  }, []);
+  }, [initialCameraType]);
 
   return (
     <div

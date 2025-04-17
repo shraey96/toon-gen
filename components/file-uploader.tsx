@@ -149,66 +149,38 @@ export default function FileUploader({
           </div>
 
           {isUserOnMobile ? (
-            <div className="flex flex-col gap-4">
-              <button
-                onClick={() => {
-                  setCameraType("environment");
-                  setIsCameraMode(true);
-                }}
-                className="w-full border border-white/20 rounded-lg p-4 hover:bg-white/5 transition-all duration-200"
-              >
-                <div className="space-y-2">
-                  <div className={`${disabled ? "opacity-50" : ""}`}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-8 w-8 text-purple-400 mx-auto"
-                    >
-                      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                      <circle cx="12" cy="13" r="3" />
-                    </svg>
-                  </div>
-                  <p className="text-white/70 text-center">Use Rear Camera</p>
+            <button
+              onClick={() => {
+                setCameraType("environment");
+                setIsCameraMode(true);
+              }}
+              className="w-full border border-white/20 rounded-lg p-4 hover:bg-white/5 transition-all duration-200"
+            >
+              <div className="space-y-2">
+                <div className={`${disabled ? "opacity-50" : ""}`}>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="h-8 w-8 text-purple-400 mx-auto"
+                  >
+                    <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
+                    <circle cx="12" cy="13" r="3" />
+                  </svg>
                 </div>
-              </button>
-
-              <button
-                onClick={() => {
-                  setCameraType("user");
-                  setIsCameraMode(true);
-                }}
-                className="w-full border border-white/20 rounded-lg p-4 hover:bg-white/5 transition-all duration-200"
-              >
-                <div className="space-y-2">
-                  <div className={`${disabled ? "opacity-50" : ""}`}>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-8 w-8 text-green-400 mx-auto"
-                    >
-                      <path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" />
-                      <circle cx="12" cy="13" r="3" />
-                      <line x1="9" y1="18" x2="15" y2="18" />
-                    </svg>
-                  </div>
-                  <p className="text-white/70 text-center">Use Front Camera</p>
-                </div>
-              </button>
-            </div>
+                <p className="text-white/70 text-center">
+                  Take a picture
+                  <br />
+                  <span className="text-sm">Using your device camera</span>
+                </p>
+              </div>
+            </button>
           ) : (
             <button
               onClick={() => setIsCameraMode(true)}

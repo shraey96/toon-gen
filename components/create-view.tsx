@@ -73,11 +73,15 @@ export default function CreateView({ onImageGenerated }: CreateViewProps) {
         setShowModal(true);
       } else {
         console.error("Failed to generate image:", result.error);
-        toast.error("Failed to generate image: " + result.error);
+        toast.error(
+          "Failed to generate image. Please try again after a few seconds."
+        );
       }
     } catch (error) {
       console.error("Error generating image:", error);
-      toast.error("Failed to generate image");
+      toast.error(
+        "Failed to generate image. Please try again after a few seconds."
+      );
     } finally {
       setIsGenerating(false);
     }

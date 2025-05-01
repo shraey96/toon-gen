@@ -2,7 +2,7 @@ import pixarImage from "@/images/styles/pixar.png";
 import modernGhibliImage from "@/images/styles/modern_ghibli.png";
 import southparkImage from "@/images/styles/southpark.png";
 import vintageImage from "@/images/styles/vintage.png";
-
+import boondocksImage from "@/images/styles/boondocks.png";
 export const APP_STYLES = [
   {
     name: "Pixar",
@@ -41,6 +41,16 @@ export const APP_STYLES = [
     badgeColor: "bg-amber-400/90",
     textColor: "text-black",
     hoverColor: "hover:bg-amber-400",
+    description:
+      "Give your images a timeless, nostalgic look with our vintage style. This transformation adds warm, sepia tones and subtle grain effects to create a classic, retro aesthetic reminiscent of old photographs.",
+  },
+  {
+    name: "BoonDock",
+    style: "BOONDONKS",
+    image: boondocksImage,
+    badgeColor: "bg-blue-400/90",
+    textColor: "text-white",
+    hoverColor: "hover:bg-blue-400",
     description:
       "Give your images a timeless, nostalgic look with our vintage style. This transformation adds warm, sepia tones and subtle grain effects to create a classic, retro aesthetic reminiscent of old photographs.",
   },

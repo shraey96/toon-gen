@@ -3,6 +3,7 @@ import modernGhibliImage from "@/images/styles/modern_ghibli.png";
 import southparkImage from "@/images/styles/southpark.png";
 import vintageImage from "@/images/styles/vintage.png";
 import boondocksImage from "@/images/styles/boondocks.png";
+
 export const APP_STYLES = [
   {
     name: "Pixar",
@@ -46,7 +47,7 @@ export const APP_STYLES = [
   },
   {
     name: "BoonDock",
-    style: "BOONDONKS",
+    style: "BOON_DOCKS",
     image: boondocksImage,
     badgeColor: "bg-blue-400/90",
     textColor: "text-white",

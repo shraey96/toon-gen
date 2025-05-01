@@ -47,7 +47,7 @@ export const APP_STYLES = [
   },
   {
     name: "BoonDock",
-    style: "BOON_DOCKS",
+    style: "BOONDOCKS",
     image: boondocksImage,
     badgeColor: "bg-blue-400/90",
     textColor: "text-white",
